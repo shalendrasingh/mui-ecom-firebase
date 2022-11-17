@@ -22,6 +22,7 @@ function App() {
       </Route>
     )
   );
+  window.store = store;
   return(
      <Provider store={store}>
     <RouterProvider router={router} />
