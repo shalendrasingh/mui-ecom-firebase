@@ -1,5 +1,7 @@
 import "./App.css";
 import { Button } from "@mui/material";
+import { Provider } from "react-redux";
+import { store } from "./Redux/store";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -20,7 +22,12 @@ function App() {
       </Route>
     )
   );
-  return <RouterProvider router={router} />;
+  window.store = store;
+  return(
+     <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
+  )
 }
 
 export default App;
