@@ -61,6 +61,7 @@ const Home = () => {
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",
+                  padding: theme.spacing(2, 0),
                 }}
               >
                 <CardMedia

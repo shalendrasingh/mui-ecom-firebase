@@ -16,9 +16,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getItemCount } from "../utils";
 import Select from "@mui/material/Select";
 import SearchIcon from "@mui/icons-material/Search";
-import { MenuItem } from "@mui/material";
+import { Menu, MenuItem } from "@mui/material";
 import { fetchAllcategories } from "../Redux/category-slice";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../firebase/auth";
+import { SignalCellularNullOutlined } from "@mui/icons-material";
+
+const StyledLink = styled(Link)(({ theme }) => ({
+  color: theme.palette.common.white,
+  textDecoration: "none",
+}));
+
 const Search = styled("section")(({ theme }) => ({
   display: "flex",
   position: "relative",
@@ -185,33 +193,91 @@ const SearchBar = () => {
 };
 
 const Header = () => {
+  const { user, signOut } = useAuth();
   const cartItems = useSelector((state) => state.cart?.value);
-  console.log("cartItems", cartItems);
   const count = getItemCount(cartItems);
+  const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const navigateToCart = () => {
+    navigate("/cart");
+  };
+
+  const handleProfileMenuOpen = (e) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      id="user-profile-menu"
+      keepMounted
+      transformOrigin={{
+        horizontal: "right",
+        vertical: "top",
+      }}
+      anchorOrigin={{
+        horizontal: "right",
+        vertical: "bottom",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My Account</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    </Menu>
+  );
 
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <Typography variant="h4" color={"inherit"}>
-          Logo
-        </Typography>
-        <SearchBar />
-        <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <IconButton
-            size="larger"
-            aria-label="shows cart items count"
-            color="inherit"
-          >
-            <Badge badgeContent={count} color="error">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        </Box>
-        <Button color={"inherit"} size="large">
-          Login
-        </Button>
-      </Toolbar>
-    </AppBar>
+    <>
+      <AppBar position="sticky" sx={{ py: 1 }}>
+        <Toolbar sx={{ display: "flex", gap: 2 }}>
+          <Typography variant="h4" color={"inherit"}>
+            <StyledLink to="/">E-comm</StyledLink>
+          </Typography>
+          <SearchBar />
+          <Box flexBasis={600} sx={{ display: { md: "flex" } }}>
+            <IconButton
+              size="larger"
+              aria-label="shows cart items count"
+              color="inherit"
+              onClick={navigateToCart}
+            >
+              <Badge badgeContent={count} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+
+            {user ? (
+              <Button
+                color={"inherit"}
+                size="large"
+                onClick={handleProfileMenuOpen}
+              >
+                Hello, {user.displayName ?? user.email}
+              </Button>
+            ) : (
+              <Button color={"inherit"} size="large">
+                Login
+              </Button>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {renderMenu}
+    </>
   );
 };
 
