@@ -2,15 +2,21 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Box, TextField } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { updateAddress } from "../Redux/checkout-slice";
 const AddressForm = () => {
-  const updateAddress = (e) => {
-    console.log(e.target);
+  const address = useSelector((state) => state.checkout?.address);
+  const dispatch = useDispatch();
+
+  const handleUpdateAddress = (e) => {
+    const { name, value } = e.target;
+    dispatch(updateAddress({ [name]: value }));
   };
   return (
     <>
       <Typography variant="h6">Shipping Address</Typography>
 
-      <Box component={"form"} onChange={updateAddress}>
+      <Box component={"form"} onChange={handleUpdateAddress}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -21,6 +27,7 @@ const AddressForm = () => {
               fullWidth
               autoComplete="given-name"
               variant="standard"
+              defaultValue={address.firstName ?? ""}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -32,10 +39,12 @@ const AddressForm = () => {
               fullWidth
               autoComplete="family-name"
               variant="standard"
+              defaultValue={address.lastName ?? ""}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
+              defaultValue={address.address1 ?? ""}
               required
               id="address1"
               name="address1"
@@ -48,6 +57,7 @@ const AddressForm = () => {
           <Grid item xs={12}>
             <TextField
               required
+              defaultValue={address.address2 ?? ""}
               id="address2"
               name="address2"
               label={"Address Line 2"}
@@ -60,6 +70,7 @@ const AddressForm = () => {
           <Grid item xs={12}>
             <TextField
               required
+              defaultValue={address.city ?? ""}
               id="city"
               name="city"
               label={"City"}
@@ -70,6 +81,7 @@ const AddressForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              defaultValue={address.zipCode ?? ""}
               required
               id="zipCode"
               name="zipCode"
@@ -82,6 +94,7 @@ const AddressForm = () => {
           <Grid item xs={12}>
             <TextField
               required
+              defaultValue={address.country ?? ""}
               id="country"
               name="country"
               label={"Country"}

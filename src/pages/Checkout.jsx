@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Paper,
@@ -11,6 +11,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import AddressForm from "../components/AddressForm";
+import PaymentForm from "../components/PaymentForm";
+import ReviewForm from "../components/ReviewForm";
+import { useDispatch } from "react-redux";
+import { clearCheckOutInformation } from "../Redux/checkout-slice";
+import { clearCart } from "../Redux/cart-slice";
+import { Link } from "react-router-dom";
 
 const steps = ["Shipping Address", "Payment Details", "Review Order"];
 
@@ -19,9 +25,9 @@ const getStepsContent = (activeStep) => {
     case 0:
       return <AddressForm />;
     case 1:
-      return <h1>payment details</h1>;
+      return <PaymentForm />;
     case 2:
-      return <h1>Review details</h1>;
+      return <ReviewForm />;
     default:
       throw new Error("Unknown steps");
   }
@@ -29,6 +35,14 @@ const getStepsContent = (activeStep) => {
 
 const Checkout = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (activeStep === steps.length) {
+      dispatch(clearCart());
+      dispatch(clearCheckOutInformation());
+    }
+  }, [activeStep]);
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -71,6 +85,7 @@ const Checkout = () => {
               Your order number is #ORD12BC12. We have emailed you regarding
               your order confirmation.
             </Typography>
+            <Link to="/">Shop More</Link>
           </>
         ) : (
           <>
