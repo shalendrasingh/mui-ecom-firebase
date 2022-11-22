@@ -242,9 +242,9 @@ const Header = () => {
   return (
     <>
       <AppBar position="sticky" sx={{ py: 1 }}>
-        <Toolbar sx={{ display: "flex", gap: 2 }}>
-          <Typography variant="h4" color={"inherit"}>
-            <StyledLink to="/">E-comm</StyledLink>
+        <Toolbar sx={{ display: "flex", gap: 6 }}>
+          <Typography variant="h6" color={"inherit"}>
+            <StyledLink to="/">Ecommerce</StyledLink>
           </Typography>
           <SearchBar />
           <Box flexBasis={600} sx={{ display: { md: "flex" } }}>
@@ -269,7 +269,7 @@ const Header = () => {
               </Button>
             ) : (
               <Button color={"inherit"} size="large">
-                Login
+                <Link to="/login">Login</Link>
               </Button>
             )}
           </Box>
